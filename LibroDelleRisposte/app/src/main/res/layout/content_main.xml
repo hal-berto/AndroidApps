@@ -13,13 +13,14 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/activity_main">
 
-    <TextView
+    <!--<TextView
             android:text="Hello World!"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"/>-->
 
     <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_ask"
+            android:textSize="30dp"
             android:onClick="queryBook"/>
 </LinearLayout>

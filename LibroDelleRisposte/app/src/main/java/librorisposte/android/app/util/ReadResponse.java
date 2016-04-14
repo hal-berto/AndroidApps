@@ -1,16 +1,15 @@
 package librorisposte.android.app.util;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import android.os.AsyncTask;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class ReadResponse {
+import java.io.IOException;
 
-    public String readNewResponse(){
+public class ReadResponse extends AsyncTask<String, Void, String> {
+
+    private String readNewResponse(){
         String response = "";
         try {
             Document doc = Jsoup.connect("http://www.bryonia.it/accessibile/risposte.php").get();
@@ -34,11 +33,8 @@ public class ReadResponse {
         return response;
     }
 
-    public static void main(String[] args){
-        ReadResponse rr = new ReadResponse();
-        for(int i = 0; i < 100; i++) {
-            System.out.println(rr.readNewResponse());
-        }
+    @Override
+    protected String doInBackground(String... params) {
+        return readNewResponse();
     }
-
 }

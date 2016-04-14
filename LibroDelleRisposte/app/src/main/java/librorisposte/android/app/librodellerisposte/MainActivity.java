@@ -1,16 +1,16 @@
 package librorisposte.android.app.librodellerisposte;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.view.View;
 import librorisposte.android.app.util.ReadResponse;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,7 +60,15 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button
         Intent intent = new Intent(this, DisplayResponseActivity.class);
         ReadResponse readResponse = new ReadResponse();
-        String message = readResponse.readNewResponse();
+        AsyncTask<String, Void, String> execute = new ReadResponse().execute();
+        String message = null;
+        try {
+            message = execute.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         intent.putExtra(RESPONSE_MESSAGE, message);
         startActivity(intent);
     }
