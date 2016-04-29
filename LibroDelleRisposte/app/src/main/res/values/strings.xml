@@ -1,6 +1,10 @@
 <resources>
+    <!-- INTERFACE MESSAGES -->
     <string name="app_name">Libro Delle Risposte</string>
     <string name="action_settings">Impostazioni</string>
     <string name="button_ask">Chiedi al libro...</string>
     <string name="title_activity_display_response">La risposta del Libro</string>
+
+    <!-- ERROR MESSAGES -->
+    <string name="error_database_creation">Impossibile creare il database</string>
 </resources>

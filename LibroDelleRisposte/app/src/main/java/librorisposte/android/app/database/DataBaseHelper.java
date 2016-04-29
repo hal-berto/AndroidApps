@@ -18,11 +18,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     //The Android's default system path of your application database.
     private static String DB_PATH = "/data/data/librorisposte.android.app.librodellerisposte/databases/";
-
     private static String DB_NAME = "libro_risposte.db";
-
     private SQLiteDatabase myDataBase;
-
     private final Context myContext;
 
     /**
@@ -31,7 +28,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * @param context
      */
     public DataBaseHelper(Context context) {
-
         super(context, DB_NAME, null, 1);
         this.myContext = context;
     }
@@ -40,9 +36,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Creates a empty database on the system and rewrites it with your own database.
      * */
     public void createDataBase() throws IOException {
-
         boolean dbExist = checkDataBase();
-
         if(dbExist){
             //do nothing - database already exist
         }else{
@@ -52,13 +46,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             this.getReadableDatabase();
 
             try {
-
                 copyDataBase();
-
             } catch (IOException e) {
-
                 throw new Error("Error copying database");
-
             }
         }
 
@@ -77,15 +67,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 
         }catch(SQLiteException e){
-
             //database does't exist yet.
-
         }
 
         if(checkDB != null){
-
             checkDB.close();
-
         }
 
         return checkDB != null ? true : false;
@@ -132,8 +118,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public synchronized void close() {
 
-        if(myDataBase != null)
+        if(myDataBase != null) {
             myDataBase.close();
+        }
 
         super.close();
 
