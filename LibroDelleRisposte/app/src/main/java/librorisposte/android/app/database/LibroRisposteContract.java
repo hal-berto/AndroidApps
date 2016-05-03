@@ -11,7 +11,7 @@ public final class LibroRisposteContract {
 
     public static abstract class Response implements BaseColumns {
         public static final String TABLE_NAME = "RESPONSE";
-        public static final String COLUMN_NAME_RESPONSE_TEST = "RESPONSE_TEXT";
+        public static final String COLUMN_NAME_RESPONSE_TEXT = "RESPONSE_TEXT";
         public static final String COLUMN_NAME_IS_DEFAULT = "IS_DEFAULT";
     }
 }

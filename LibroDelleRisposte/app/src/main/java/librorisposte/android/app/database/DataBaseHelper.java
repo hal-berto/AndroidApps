@@ -22,12 +22,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private SQLiteDatabase myDataBase;
     private final Context myContext;
 
+    private static DataBaseHelper sInstance;
+
+    public static synchronized DataBaseHelper getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new DataBaseHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
     /**
      * Constructor
      * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
      * @param context
      */
-    public DataBaseHelper(Context context) {
+    private DataBaseHelper(Context context) {
         super(context, DB_NAME, null, 1);
         this.myContext = context;
     }
@@ -37,6 +46,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * */
     public void createDataBase() throws IOException {
         boolean dbExist = checkDataBase();
+
         if(dbExist){
             //do nothing - database already exist
         }else{
