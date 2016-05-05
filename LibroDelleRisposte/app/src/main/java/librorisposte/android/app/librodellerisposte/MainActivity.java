@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import librorisposte.android.app.database.DataBaseHelper;
+import librorisposte.android.app.database.ResponseDAO;
 import librorisposte.android.app.util.ReadResponse;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DataBaseHelper dbHelper = new DataBaseHelper(this);
+        DataBaseHelper dbHelper = DataBaseHelper.getInstance(this);
         try {
             dbHelper.createDataBase();
         } catch (IOException ioe) {
@@ -68,14 +69,14 @@ public class MainActivity extends AppCompatActivity {
     public void queryBook(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, DisplayResponseActivity.class);
-        ReadResponse readResponse = new ReadResponse();
-        AsyncTask<String, Void, String> execute = new ReadResponse().execute();
+        //ReadResponse readResponse = new ReadResponse();
+        //AsyncTask<String, Void, String> execute = new ReadResponse().execute();
         String message = null;
         try {
-            message = execute.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            //message = execute.get();
+            ResponseDAO responseDao = new ResponseDAO(this);
+            message = responseDao.getRandomResponse();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         intent.putExtra(RESPONSE_MESSAGE, message);

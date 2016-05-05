@@ -21,21 +21,22 @@ public class ResponseDAO {
     public String getRandomResponse(){
         SQLiteDatabase db = DataBaseHelper.getInstance(context).getReadableDatabase();
 
-        String selectQuery = "SELECT COUNT(*)" +
-                " FROM " + LibroRisposteContract.Response.TABLE_NAME;
-        Cursor c = db.rawQuery(selectQuery, null);
-        c.moveToFirst();
-        int rowCount= c.getInt(0);
-        c.close();
-
+        int rowCount= countResponse();
         int randomId = 0;
 
         Random rn = new Random();
         int randomNum =  rn.nextInt(rowCount);
-        if(c.moveToPosition(randomNum)){
-            randomId = c.getInt(0);
+
+        String response = "";
+        String selectQuery = "SELECT " + LibroRisposteContract.Response.COLUMN_NAME_RESPONSE_TEXT +
+                " FROM " + LibroRisposteContract.Response.TABLE_NAME +
+                " LIMIT ?,1";
+        Cursor c = db.rawQuery(selectQuery, new String[] { String.valueOf(randomNum) });
+        if (c.moveToFirst()) {
+            response = c.getString(c.getColumnIndex(LibroRisposteContract.Response.COLUMN_NAME_RESPONSE_TEXT));
         }
-        return getResponseById(randomId);
+        c.close();
+        return response;
     }
 
     public String getResponseById(int id){
@@ -53,4 +54,15 @@ public class ResponseDAO {
         return response;
     }
 
+    public int countResponse(){
+        SQLiteDatabase db = DataBaseHelper.getInstance(context).getReadableDatabase();
+
+        String selectQuery = "SELECT COUNT(*)" +
+                " FROM " + LibroRisposteContract.Response.TABLE_NAME;
+        Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
+        int rowCount= c.getInt(0);
+        c.close();
+        return rowCount;
+    }
 }
