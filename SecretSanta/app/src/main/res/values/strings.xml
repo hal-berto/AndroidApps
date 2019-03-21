@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Secret Santa</string>
+    <string name="create_event_button">Crea nuovo evento</string>
+    <string name="no_events_configured">Non ci sono eventi da mostrare</string>
+    <string name="dialog_confirm_database_reset">Confermare cancellazione dati?</string>
+    <string name="dialog_confirm_choice">Si</string>
+    <string name="dialog_cancel_choice">No</string>
+    <string name="save_entity">Salva</string>
+    <string name="event_name_label">Nome evento:</string>
+    <string name="event_date_label">Data:</string>
+    <string name="event_location_label">Luogo:</string>
+    <string name="event_description_label">Descrizione:</string>
+    <string name="event_budget_label">Budget:</string>
+    <string name="event_budget_min_label">Min:</string>
+    <string name="event_budget_max_label">Max:</string>
+    <string name="clean_database_button">Cancella Dati</string>
 </resources>
