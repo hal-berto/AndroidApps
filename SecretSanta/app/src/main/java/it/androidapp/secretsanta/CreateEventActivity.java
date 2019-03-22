@@ -1,12 +1,5 @@
 package it.androidapp.secretsanta;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.util.StringUtil;
-import it.androidapp.secretsanta.database.AppDatabase;
-import it.androidapp.secretsanta.database.DatabaseHandler;
-import it.androidapp.secretsanta.database.entity.Event;
-import it.androidapp.secretsanta.datepicker.SecretSantaDatePicker;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +7,16 @@ import android.widget.EditText;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CreateEventActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+import it.androidapp.secretsanta.database.AppDatabase;
+import it.androidapp.secretsanta.database.DatabaseHandler;
+import it.androidapp.secretsanta.database.entity.Event;
+import it.androidapp.secretsanta.datepicker.SecretSantaDatePicker;
+import it.androidapp.secretsanta.util.DateConverterUtil;
 
-    private DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+public class CreateEventActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +39,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Event newEvent = new Event();
         newEvent.setName(editTextName.getText().toString());
         if(StringUtils.isNotBlank(editTextDate.getText().toString())){
-            try {
-                newEvent.setDate(df.parse(editTextDate.getText().toString()));
-            } catch(Exception e){
-                newEvent.setDate(new Date());
-            }
+            newEvent.setDate(DateConverterUtil.stringToDate(editTextDate.getText().toString()));
         } else {
             newEvent.setDate(new Date());
         }

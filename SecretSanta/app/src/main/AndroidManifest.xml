@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/secret_gift"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateEventActivity"></activity>
+        <activity android:name=".CreateParticipantActivity"></activity>
+        <activity android:name=".CreateEventActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
