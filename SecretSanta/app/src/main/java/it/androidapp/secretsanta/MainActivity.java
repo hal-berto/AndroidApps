@@ -31,7 +31,6 @@ public class MainActivity extends FragmentActivity implements ConfirmationDialog
         textMessageView.setText("");
 
         fillEventList();
-        //fillParticipantList();
 
     }
 
@@ -47,30 +46,8 @@ public class MainActivity extends FragmentActivity implements ConfirmationDialog
         if(eventList == null || eventList.size() <= 0){
             TextView textMessageView = (TextView) findViewById(R.id.textMessage);
             textMessageView.setText(R.string.no_events_configured);
-        }/* else {
-            TextView textMessageView = (TextView) findViewById(R.id.textMessage);
-            for(Event currEvent : eventList) {
-                textMessageView.append(System.getProperty("line.separator") + currEvent.getName());
-            }
-        }*/
-    }
-
-    /*private void fillParticipantList(){
-        AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
-
-        //Loads all configured events
-        List<Participant> participantList = database.participantDao().getAll();
-
-        if(participantList == null || participantList.size() <= 0){
-            TextView textMessageView = (TextView) findViewById(R.id.textMessage);
-            textMessageView.append(System.getProperty("line.separator") + R.string.no_participants_configured);
-        } else {
-            TextView textMessageView = (TextView) findViewById(R.id.textMessage);
-            for(Participant currParticipant : participantList) {
-                textMessageView.append(System.getProperty("line.separator") + currParticipant.getFirstName() + " " + currParticipant.getLastName());
-            }
         }
-    }*/
+    }
 
     /** Called when the user taps the "create new event" button */
     public void createNewEvent(View view) {
@@ -79,8 +56,8 @@ public class MainActivity extends FragmentActivity implements ConfirmationDialog
     }
 
     /** Called when the user taps the "create new participant" button */
-    public void createNewParticipant(View view) {
-        Intent intent = new Intent(this, CreateParticipantActivity.class);
+    public void manageParticipant(View view) {
+        Intent intent = new Intent(this, ParticipantListActivity.class);
         startActivity(intent);
     }
 
@@ -104,14 +81,14 @@ public class MainActivity extends FragmentActivity implements ConfirmationDialog
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        fillEventList();
+        //fillEventList();
     }
 
 
     @Override
     public void onListFragmentInteraction(Event item) {
-        //TODO: gestire evento selezionato
-        TextView textMessageView = (TextView) findViewById(R.id.textMessage);
-        textMessageView.append(System.getProperty("line.separator") + "Elemento selezionato: " + item.getName());
+        Intent intent = new Intent(this, ManageEventActivity.class);
+        intent.putExtra(NavigationParameters.SELECTED_EVENT_ID, item.getId());
+        startActivity(intent);
     }
 }

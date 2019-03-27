@@ -18,6 +18,15 @@ public interface ParticipantDao {
     @Query("SELECT * FROM participant WHERE id = :id")
     Participant getById(Integer id);
 
+    @Query("SELECT p.* FROM participant p where p.id NOT IN (SELECT pte.id_participant FROM participant_to_event pte where pte.id_event = :eventId)")
+    List<Participant> getParticipantNotInEvent(Integer eventId);
+
+    @Query("SELECT p.* FROM participant p where p.id NOT IN (SELECT el.id_participant_excluded FROM exclusion_list el where el.id_participant = :participantId) AND p.id != :participantId")
+    List<Participant> getParticipantNotExcluded(Integer participantId);
+
+    @Query("SELECT p.* FROM participant p where p.id IN (SELECT el.id_participant_excluded FROM exclusion_list el where el.id_participant = :participantId) AND p.id != :participantId")
+    List<Participant> getParticipantExcluded(Integer participantId);
+
     @Insert
     void insertAll(Participant... participant);
 

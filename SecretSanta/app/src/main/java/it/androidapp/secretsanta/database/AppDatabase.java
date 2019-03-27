@@ -4,15 +4,17 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import it.androidapp.secretsanta.database.dao.EventDao;
+import it.androidapp.secretsanta.database.dao.EventResultDao;
 import it.androidapp.secretsanta.database.dao.ExclusionListDao;
 import it.androidapp.secretsanta.database.dao.ParticipantDao;
 import it.androidapp.secretsanta.database.dao.ParticipantToEventDao;
 import it.androidapp.secretsanta.database.entity.Event;
+import it.androidapp.secretsanta.database.entity.EventResult;
 import it.androidapp.secretsanta.database.entity.ExclusionList;
 import it.androidapp.secretsanta.database.entity.Participant;
 import it.androidapp.secretsanta.database.entity.ParticipantToEvent;
 
-@Database(entities = {Event.class, ExclusionList.class, Participant.class, ParticipantToEvent.class}, version = 1, exportSchema = false)
+@Database(entities = {Event.class, ExclusionList.class, Participant.class, ParticipantToEvent.class, EventResult.class}, version = 2, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -23,5 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ParticipantDao participantDao();
 
     public abstract ParticipantToEventDao participantToEventDao();
+
+    public abstract EventResultDao eventResultDao();
 
 }

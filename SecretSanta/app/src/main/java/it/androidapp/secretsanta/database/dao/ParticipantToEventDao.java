@@ -20,6 +20,12 @@ public interface ParticipantToEventDao {
     @Query("SELECT * FROM participant_to_event WHERE id_participant = :idParticipant")
     List<ParticipantToEvent> getAllByParticipant(Integer idParticipant);
 
+    @Query("DELETE FROM participant_to_event where id_event = :eventId")
+    void deleteByEventId(Integer eventId);
+
+    @Query("DELETE FROM participant_to_event where id_participant = :participantId")
+    void deleteByParticipantId(Integer participantId);
+
     @Insert
     void insertAll(ParticipantToEvent... participantToEvent);
 

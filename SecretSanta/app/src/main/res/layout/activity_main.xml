@@ -28,36 +28,34 @@
         android:id="@+id/createNewEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:onClick="createNewEvent"
         android:text="@string/create_event_button"
-        app:layout_constraintBottom_toTopOf="@+id/createNewParticipant"
+        app:layout_constraintBaseline_toBaselineOf="@+id/manageParticipant"
+        app:layout_constraintEnd_toStartOf="@+id/manageParticipant"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/cleanDatabase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:onClick="cleanDatabase"
         android:text="@string/clean_database_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/createNewParticipant"
+        android:id="@+id/manageParticipant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:onClick="createNewParticipant"
-        android:text="@string/create_participant_button"
-        app:layout_constraintBaseline_toBaselineOf="@+id/cleanDatabase"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginBottom="8dp"
+        android:onClick="manageParticipant"
+        android:text="@string/manage_participant_button"
+        app:layout_constraintBottom_toTopOf="@+id/cleanDatabase"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <fragment
         android:id="@+id/fragment"

@@ -2,20 +2,17 @@ package it.androidapp.secretsanta.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import it.androidapp.secretsanta.R;
 import it.androidapp.secretsanta.database.entity.Event;
-
-import java.util.List;
+import it.androidapp.secretsanta.database.entity.Participant;
 
 /**
  * A fragment representing a list of Items.
@@ -23,7 +20,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class EventFragment extends Fragment {
+public class ParticipantFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -36,13 +33,13 @@ public class EventFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public EventFragment() {
+    public ParticipantFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static EventFragment newInstance(int columnCount) {
-        EventFragment fragment = new EventFragment();
+    public static ParticipantFragment newInstance(int columnCount) {
+        ParticipantFragment fragment = new ParticipantFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -61,7 +58,7 @@ public class EventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_participant_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -106,6 +103,6 @@ public class EventFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Event item);
+        void onListFragmentInteraction(Participant item);
     }
 }

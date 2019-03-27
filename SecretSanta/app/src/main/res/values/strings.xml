@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Secret Santa</string>
-    <string name="create_event_button">Crea nuovo evento</string>
+    <string name="create_event_button">Nuovo evento</string>
     <string name="no_events_configured">Non ci sono eventi da mostrare</string>
     <string name="no_participants_configured">Non ci sono partecipanti da mostrare</string>
     <string name="dialog_confirm_database_reset">Confermare cancellazione dati?</string>
@@ -14,10 +14,18 @@
     <string name="event_budget_label">Budget:</string>
     <string name="event_budget_min_label">Min:</string>
     <string name="event_budget_max_label">Max:</string>
-    <string name="clean_database_button">Cancella Dati</string>
+    <string name="clean_database_button">Canc. Dati</string>
     <string name="participant_firstname_label">Nome:</string>
     <string name="participant_lastname_label">Cognome:</string>
     <string name="participant_phone_label">Telefono:</string>
     <string name="participant_email_label">Email:</string>
-    <string name="create_participant_button">Crea nuovo partecipante</string>
+    <string name="create_participant_button">Nuovo partecipante</string>
+    <string name="manage_participant_button">Gestione partecipanti</string>
+    <string name="back_to_event_list">Torna a lista eventi</string>
+    <string name="participant_list">Lista partecipanti:</string>
+    <string name="add_participant_button">Agg. Partecipante</string>
+    <string name="back_button">Indietro</string>
+    <string name="add_exclusion_button">Agg. esclusione</string>
+    <string name="participant_exclusion_label">Lista esclusioni:</string>
+    <string name="delete_button">Cancella</string>
 </resources>
