@@ -25,6 +25,9 @@ import java.util.List;
 
 public class ManageEventActivity extends FragmentActivity implements ConfirmationDialog.NoticeDialogListener, ParticipantFragment.OnListFragmentInteractionListener {
 
+    private enum DeleteType{DELETE_PARTICIPANT,DELETE_EVENT}
+    private static String ACTION_TYPE = "ACTION_TYPE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +79,7 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
     public void onListFragmentInteraction(Participant item) {
         Bundle arguments = new Bundle();
         arguments.putInt(NavigationParameters.SELECTED_PARTICIPANT_ID, item.getId());
+        arguments.putString(ACTION_TYPE, DeleteType.DELETE_PARTICIPANT.toString());
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new ConfirmationDialog();
         dialog.setArguments(arguments);
@@ -90,12 +94,23 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         Intent intent = getIntent();
         Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
         Integer selectedParticipantId = dialog.getArguments().getInt(NavigationParameters.SELECTED_PARTICIPANT_ID);
-        ParticipantToEvent participantToDelete = new ParticipantToEvent();
-        participantToDelete.setIdEvent(selectedEventId);
-        participantToDelete.setIdParticipant(selectedParticipantId);
+        String deleteType = dialog.getArguments().getString(ACTION_TYPE);
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
-        database.participantToEventDao().delete(participantToDelete);
-        fillParticipantList();
+
+        if(DeleteType.DELETE_PARTICIPANT.toString().equals(deleteType) && selectedParticipantId > 0){
+            ParticipantToEvent participantToDelete = new ParticipantToEvent();
+            participantToDelete.setIdEvent(selectedEventId);
+            participantToDelete.setIdParticipant(selectedParticipantId);
+            database.participantToEventDao().delete(participantToDelete);
+            fillParticipantList();
+        } else if(DeleteType.DELETE_EVENT.toString().equals(deleteType) && selectedEventId > 0){
+            database.eventResultDao().deleteByEventId(selectedEventId);
+            database.participantToEventDao().deleteByEventId(selectedEventId);
+            database.eventDao().delete(database.eventDao().getById(selectedEventId));
+
+            Intent intentToCall = new Intent(this, MainActivity.class);
+            startActivity(intentToCall);
+        }
     }
 
     @Override
@@ -121,12 +136,12 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
     public void deleteEvent(View view){
         Intent intent = getIntent();
         Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
-        AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
-        database.eventResultDao().deleteByEventId(selectedEventId);
-        database.participantToEventDao().deleteByEventId(selectedEventId);
-        database.eventDao().delete(database.eventDao().getById(selectedEventId));
 
-        Intent intentToCall = new Intent(this, MainActivity.class);
-        startActivity(intentToCall);
+        Bundle arguments = new Bundle();
+        arguments.putString(ACTION_TYPE, DeleteType.DELETE_EVENT.toString());
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new ConfirmationDialog();
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "ConfirmationDialog");
     }
 }

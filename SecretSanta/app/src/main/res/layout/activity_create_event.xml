@@ -188,5 +188,15 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/event_maximum_budget_edit"
         app:layout_constraintEnd_toStartOf="@+id/event_maximum_budget_edit" />
 
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:onClick="backToEventList"
+        android:text="@string/back_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

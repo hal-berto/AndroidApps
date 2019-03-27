@@ -62,4 +62,10 @@ public class CreateEventActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+    /** Called when the user taps the "back to event list" button */
+    public void backToEventList(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }

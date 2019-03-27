@@ -22,6 +22,9 @@ import java.util.List;
 
 public class ManageParticipantActivity extends FragmentActivity implements ConfirmationDialog.NoticeDialogListener, ParticipantFragment.OnListFragmentInteractionListener {
 
+    private enum DeleteType{DELETE_PARTICIPANT,DELETE_EXCLUSION}
+    private static String ACTION_TYPE = "ACTION_TYPE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,7 @@ public class ManageParticipantActivity extends FragmentActivity implements Confi
         Bundle arguments = new Bundle();
         arguments.putInt(NavigationParameters.SELECTED_EXCLUDED_ID, item.getId());
         arguments.putInt(NavigationParameters.SELECTED_PARTICIPANT_ID, selectedParticipantId);
+        arguments.putString(ACTION_TYPE, DeleteType.DELETE_EXCLUSION.toString());
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new ConfirmationDialog();
         dialog.setArguments(arguments);
@@ -84,13 +88,23 @@ public class ManageParticipantActivity extends FragmentActivity implements Confi
         Intent intent = getIntent();
         Integer selectedExcludedId = dialog.getArguments().getInt(NavigationParameters.SELECTED_EXCLUDED_ID);
         Integer selectedParticipantId = dialog.getArguments().getInt(NavigationParameters.SELECTED_PARTICIPANT_ID);
-        ExclusionList exclusion = new ExclusionList();
-        exclusion.setIdParticipant(selectedParticipantId);
-        exclusion.setIdParticipantExcluded(selectedExcludedId);
+        String deleteType = dialog.getArguments().getString(ACTION_TYPE);
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
-        database.exclusionListDao().delete(exclusion);
 
-        fillExclusionList(selectedParticipantId);
+        if(DeleteType.DELETE_PARTICIPANT.toString().equals(deleteType) && selectedParticipantId > 0){
+            database.eventResultDao().deleteByParticipantId(selectedParticipantId);
+            database.participantToEventDao().deleteByParticipantId(selectedParticipantId);
+            database.exclusionListDao().deleteByParticipantId(selectedParticipantId);
+            database.participantDao().delete(database.participantDao().getById(selectedParticipantId));
+            Intent intentToCall = new Intent(this, ParticipantListActivity.class);
+            startActivity(intentToCall);
+        } else if(DeleteType.DELETE_EXCLUSION.toString().equals(deleteType) && selectedExcludedId > 0){
+            ExclusionList exclusion = new ExclusionList();
+            exclusion.setIdParticipant(selectedParticipantId);
+            exclusion.setIdParticipantExcluded(selectedExcludedId);
+            database.exclusionListDao().delete(exclusion);
+            fillExclusionList(selectedParticipantId);
+        }
     }
 
     @Override
@@ -131,16 +145,13 @@ public class ManageParticipantActivity extends FragmentActivity implements Confi
     public void deleteParticipant(View view){
         Intent intent = getIntent();
         Integer selectedParticipantId = intent.getIntExtra(NavigationParameters.SELECTED_PARTICIPANT_ID, -1);
-        if(selectedParticipantId > 0) {
-            AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
-            database.eventResultDao().deleteByParticipantId(selectedParticipantId);
-            database.participantToEventDao().deleteByParticipantId(selectedParticipantId);
-            database.exclusionListDao().deleteByParticipantId(selectedParticipantId);
-            database.participantDao().delete(database.participantDao().getById(selectedParticipantId));
-        }
-
-        Intent intentToCall = new Intent(this, ParticipantListActivity.class);
-        startActivity(intentToCall);
+        Bundle arguments = new Bundle();
+        arguments.putString(ACTION_TYPE, DeleteType.DELETE_PARTICIPANT.toString());
+        arguments.putInt(NavigationParameters.SELECTED_PARTICIPANT_ID, selectedParticipantId);
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new ConfirmationDialog();
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "ConfirmationDialog");
     }
 
     /** Called when the user taps the "add new exclusion" button */
