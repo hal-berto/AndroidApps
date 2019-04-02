@@ -18,6 +18,9 @@ public interface ExclusionListDao {
     @Query("SELECT p.* FROM exclusion_list el JOIN participant p on el.id_participant_excluded = p.id WHERE el.id_participant = :idParticipant")
     List<Participant> getAllByExcludedParticipant(Integer idParticipant);
 
+    @Query("SELECT * FROM exclusion_list WHERE id_participant = :participantId")
+    List<ExclusionList> getAllByParticipantId(Integer participantId);
+
     @Query("DELETE FROM exclusion_list WHERE id_participant_excluded = :participantId OR id_participant = :participantId")
     void deleteByParticipantId(Integer participantId);
 

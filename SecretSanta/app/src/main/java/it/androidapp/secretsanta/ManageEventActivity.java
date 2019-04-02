@@ -1,17 +1,18 @@
 package it.androidapp.secretsanta;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import it.androidapp.secretsanta.database.AppDatabase;
 import it.androidapp.secretsanta.database.DatabaseHandler;
 import it.androidapp.secretsanta.database.entity.Event;
+import it.androidapp.secretsanta.database.entity.EventResult;
 import it.androidapp.secretsanta.database.entity.Participant;
 import it.androidapp.secretsanta.database.entity.ParticipantToEvent;
 import it.androidapp.secretsanta.dialog.ConfirmationDialog;
-import it.androidapp.secretsanta.fragment.EventFragment;
-import it.androidapp.secretsanta.fragment.EventRecyclerViewAdapter;
+import it.androidapp.secretsanta.extraction.ExtractionFailedException;
+import it.androidapp.secretsanta.extraction.ExtractionManager;
+import it.androidapp.secretsanta.extraction.ExtractionMapCreationException;
 import it.androidapp.secretsanta.fragment.ParticipantFragment;
 import it.androidapp.secretsanta.fragment.ParticipantRecyclerViewAdapter;
 import it.androidapp.secretsanta.util.DateConverterUtil;
@@ -19,6 +20,7 @@ import it.androidapp.secretsanta.util.DateConverterUtil;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -33,12 +35,17 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_event);
 
+        TextView textMessageView = (TextView) findViewById(R.id.message_box);
+        textMessageView.setText("");
+
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
 
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
         Event selectedEvent = database.eventDao().getById(selectedEventId);
+
+        setExtractionButtonVisibility();
 
         TextView eventNameView = findViewById(R.id.event_name_text);
         eventNameView.setText(selectedEvent.getName());
@@ -59,6 +66,21 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         eventMaxBudgetView.setText(selectedEvent.getMaximumAmount().toString());
 
         fillParticipantList();
+    }
+
+    private void setExtractionButtonVisibility(){
+        Intent intent = getIntent();
+        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
+        Button extractionButton = findViewById(R.id.extractionButton);
+        List<Participant> participantList = database.eventDao().getParticipantByEvent(selectedEventId);
+        List<EventResult> eventResultList = database.eventResultDao().getAllByEvent(selectedEventId);
+        if(participantList == null || participantList.size() <= 0){
+            extractionButton.setEnabled(false);
+        }
+        else if(eventResultList != null && eventResultList.size() == participantList.size()){
+            extractionButton.setText(R.string.perform_new_extraction_button);
+        }
     }
 
     private void fillParticipantList(){
@@ -108,7 +130,7 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
             database.participantToEventDao().deleteByEventId(selectedEventId);
             database.eventDao().delete(database.eventDao().getById(selectedEventId));
 
-            Intent intentToCall = new Intent(this, MainActivity.class);
+            Intent intentToCall = new Intent(this, EventListActivity.class);
             startActivity(intentToCall);
         }
     }
@@ -119,7 +141,7 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
 
     /** Called when the user taps the "back to event list" button */
     public void backToEventList(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, EventListActivity.class);
         startActivity(intent);
     }
 
@@ -143,5 +165,27 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         DialogFragment dialog = new ConfirmationDialog();
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "ConfirmationDialog");
+    }
+
+    public void performExtraction(View view){
+        Intent intent = getIntent();
+        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+
+        AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
+        database.eventResultDao().deleteByEventId(selectedEventId);
+
+        ExtractionManager extractionManager = new ExtractionManager(getApplicationContext(), selectedEventId);
+        TextView textMessageView = (TextView) findViewById(R.id.message_box);
+        try {
+            extractionManager.performExtraction();
+            setExtractionButtonVisibility();
+            textMessageView.setText(R.string.extraction_completed);
+        } catch(ExtractionMapCreationException e1) {
+            textMessageView.setText(R.string.extraction_map_creation_exception);
+        } catch(ExtractionFailedException e2) {
+            textMessageView.setText(R.string.extraction_failed_exception);
+        } catch(Exception e3) {
+            textMessageView.setText(e3.getMessage());
+        }
     }
 }

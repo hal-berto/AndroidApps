@@ -59,13 +59,13 @@ public class CreateEventActivity extends AppCompatActivity {
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
         database.eventDao().insertAll(newEvent);
         //Return to main screen
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, EventListActivity.class);
         startActivity(intent);
     }
 
     /** Called when the user taps the "back to event list" button */
     public void backToEventList(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, EventListActivity.class);
         startActivity(intent);
     }
 }

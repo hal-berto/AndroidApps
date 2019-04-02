@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/secret_gift"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ManageEventActivity"></activity>
+        <activity android:name=".EventListActivity" />
+        <activity android:name=".ManageEventActivity" />
         <activity android:name=".ParticipantListActivity" />
         <activity android:name=".ManageParticipantActivity" />
         <activity android:name=".CreateEventActivity" />
