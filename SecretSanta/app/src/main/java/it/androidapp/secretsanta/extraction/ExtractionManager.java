@@ -2,6 +2,7 @@ package it.androidapp.secretsanta.extraction;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -135,14 +136,22 @@ public class ExtractionManager {
             return null;
         }
 
-        for(ParticipantToEvent currParticipant : participantList){
-            List<ExclusionList> exclusionList = database.exclusionListDao().getAllByParticipantId(currParticipant.getIdParticipant());
-            Set<Integer> recipientList = buildRecipientList(currParticipant, participantList, exclusionList);
+        //Lista creata per estrarre randomicamente i partecipanti lasciando intatta la lista "participantList"
+        List<ParticipantToEvent> participantListForExtraction = new ArrayList<ParticipantToEvent>();
+        participantListForExtraction.addAll(participantList);
+
+        Random rand = new Random();
+        do {
+            int randomIndex = rand.nextInt(participantListForExtraction.size());
+            ParticipantToEvent randomElement = participantListForExtraction.get(randomIndex);
+            List<ExclusionList> exclusionList = database.exclusionListDao().getAllByParticipantId(randomElement.getIdParticipant());
+            Set<Integer> recipientList = buildRecipientList(randomElement, participantList, exclusionList);
             if(recipientList.size() <= 0){
                 return null;
             }
-            extractionMap.put(currParticipant.getIdParticipant(), recipientList);
-        }
+            extractionMap.put(randomElement.getIdParticipant(), recipientList);
+            participantListForExtraction.remove(randomIndex);
+        } while(participantListForExtraction != null && participantListForExtraction.size() > 0);
 
         return extractionMap;
     }
