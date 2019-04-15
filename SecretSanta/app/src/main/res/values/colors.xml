@@ -3,4 +3,6 @@
     <color name="colorPrimary">#D50000</color>
     <color name="colorPrimaryDark">#A50000</color>
     <color name="colorAccent">#D50000</color>
+    <color name="colorDivide">#FFFFFF</color>
+    <color name="colorRecyclerBackground">#FFBCBC</color>
 </resources>
