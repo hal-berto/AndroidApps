@@ -185,7 +185,7 @@
         android:onClick="addParticipantToEvent"
         android:text="@string/add_participant_button"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/extractionButton"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sendMailButton"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -203,15 +203,11 @@
         android:id="@+id/extractionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:onClick="performExtraction"
         android:text="@string/perform_extraction_button"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/button3"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -224,4 +220,19 @@
         android:text="message_box"
         app:layout_constraintBottom_toTopOf="@+id/extractionButton"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/sendMailButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:onClick="sendEmail"
+        android:text="@string/send_mail_button"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/extractionButton"
+        app:layout_constraintEnd_toStartOf="@+id/button4"
+        app:layout_constraintStart_toEndOf="@+id/extractionButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

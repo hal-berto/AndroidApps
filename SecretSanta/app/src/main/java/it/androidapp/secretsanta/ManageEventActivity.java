@@ -15,6 +15,7 @@ import it.androidapp.secretsanta.extraction.ExtractionManager;
 import it.androidapp.secretsanta.extraction.ExtractionMapCreationException;
 import it.androidapp.secretsanta.fragment.ParticipantFragment;
 import it.androidapp.secretsanta.fragment.ParticipantRecyclerViewAdapter;
+import it.androidapp.secretsanta.mail.MailManager;
 import it.androidapp.secretsanta.util.DateConverterUtil;
 
 import android.content.Intent;
@@ -39,13 +40,12 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         textMessageView.setText("");
 
         // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        Integer selectedEventId = getSelectedEventId();
 
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
         Event selectedEvent = database.eventDao().getById(selectedEventId);
 
-        setExtractionButtonVisibility();
+        setButtonVisibility();
 
         TextView eventNameView = findViewById(R.id.event_name_text);
         eventNameView.setText(selectedEvent.getName());
@@ -68,24 +68,28 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         fillParticipantList();
     }
 
-    private void setExtractionButtonVisibility(){
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+    private void setButtonVisibility(){
+        Integer selectedEventId = getSelectedEventId();
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
         Button extractionButton = findViewById(R.id.extractionButton);
+        Button sendMailButton = findViewById(R.id.sendMailButton);
+        sendMailButton.setEnabled(false);
         List<Participant> participantList = database.eventDao().getParticipantByEvent(selectedEventId);
         List<EventResult> eventResultList = database.eventResultDao().getAllByEvent(selectedEventId);
+        //Se non ci sono partecipanti
         if(participantList == null || participantList.size() <= 0){
             extractionButton.setEnabled(false);
+            sendMailButton.setEnabled(false);
         }
+        //Se è gia' stata effettuata un'estrazione completa (tutti i partecipanti hanno un destinatario)
         else if(eventResultList != null && eventResultList.size() == participantList.size()){
             extractionButton.setText(R.string.perform_new_extraction_button);
+            sendMailButton.setEnabled(true);
         }
     }
 
     private void fillParticipantList(){
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        Integer selectedEventId = getSelectedEventId();
 
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
 
@@ -113,8 +117,7 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
     // defined by the NoticeDialogFragment.NoticeDialogListener interface
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        Integer selectedEventId = getSelectedEventId();
         Integer selectedParticipantId = dialog.getArguments().getInt(NavigationParameters.SELECTED_PARTICIPANT_ID);
         String deleteType = dialog.getArguments().getString(ACTION_TYPE);
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
@@ -147,8 +150,7 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
 
     /** Called when the user taps the "add new participant" button */
     public void addParticipantToEvent(View view) {
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        Integer selectedEventId = getSelectedEventId();
 
         Intent intentToCall = new Intent(this, ParticipantListActivity.class);
         intentToCall.putExtra(NavigationParameters.SELECTED_EVENT_ID, selectedEventId);
@@ -156,9 +158,6 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
     }
 
     public void deleteEvent(View view){
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
-
         Bundle arguments = new Bundle();
         arguments.putString(ACTION_TYPE, DeleteType.DELETE_EVENT.toString());
         // Create an instance of the dialog fragment and show it
@@ -167,9 +166,32 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         dialog.show(getSupportFragmentManager(), "ConfirmationDialog");
     }
 
+    public void sendEmail(View view){
+        Integer selectedEventId = getSelectedEventId();
+        AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
+        Event event = database.eventDao().getById(selectedEventId);
+        List<EventResult> eventResultList = database.eventResultDao().getAllByEvent(selectedEventId);
+        MailManager mailManager = new MailManager(getApplicationContext(), selectedEventId);
+        TextView textMessageView = (TextView) findViewById(R.id.message_box);
+
+        int mailSentNumber = 0;
+        for(EventResult currEventResult : eventResultList){
+            Participant participantFrom = database.participantDao().getById(currEventResult.getIdParticipantFrom());
+            Participant participantTo = database.participantDao().getById(currEventResult.getIdParticipantTo());
+            try {
+                mailManager.processEventResult(event, participantFrom, participantTo);
+                mailSentNumber++;
+                textMessageView.setText(R.string.mail_sending_completed);
+                textMessageView.append(String.valueOf(mailSentNumber));
+            }catch(Exception e){
+                textMessageView.setText(R.string.mail_sending_failed_exception);
+                textMessageView.append(": " + e.getMessage());
+            }
+        }
+    }
+
     public void performExtraction(View view){
-        Intent intent = getIntent();
-        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        Integer selectedEventId = getSelectedEventId();
 
         AppDatabase database = DatabaseHandler.getDatabase(getApplicationContext());
         database.eventResultDao().deleteByEventId(selectedEventId);
@@ -178,7 +200,7 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         TextView textMessageView = (TextView) findViewById(R.id.message_box);
         try {
             extractionManager.performExtraction();
-            setExtractionButtonVisibility();
+            setButtonVisibility();
             textMessageView.setText(R.string.extraction_completed);
         } catch(ExtractionMapCreationException e1) {
             textMessageView.setText(R.string.extraction_map_creation_exception);
@@ -187,5 +209,11 @@ public class ManageEventActivity extends FragmentActivity implements Confirmatio
         } catch(Exception e3) {
             textMessageView.setText(e3.getMessage());
         }
+    }
+
+    private Integer getSelectedEventId(){
+        Intent intent = getIntent();
+        Integer selectedEventId = intent.getIntExtra(NavigationParameters.SELECTED_EVENT_ID, -1);
+        return selectedEventId;
     }
 }

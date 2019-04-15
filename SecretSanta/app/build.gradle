@@ -32,4 +32,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation files('libs/commons-lang3-3.4.jar')
+    implementation files('libs/javax.mail.jar')
+    implementation files('libs/activation.jar')
+    implementation files('libs/additionnal.jar')
 }

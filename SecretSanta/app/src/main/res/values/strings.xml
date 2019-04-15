@@ -32,8 +32,11 @@
     <string name="created_events_label">Eventi creati:</string>
     <string name="created_participants_label">Partecipanti creati:</string>
     <string name="extraction_failed_exception">Non è stato possibile completare l\'estrazione</string>
+    <string name="mail_sending_failed_exception">Non è stato possibile inviare tutte le email</string>
+    <string name="mail_sending_completed">Mail inviate: </string>
     <string name="extraction_map_creation_exception">Non è stato possibile recuperare i dati necessari per l\'estrazione</string>
     <string name="extraction_completed">Estrazione effettuata</string>
     <string name="perform_extraction_button">Estrazione</string>
     <string name="perform_new_extraction_button">Nuova estrazione</string>
+    <string name="send_mail_button">Invia mail</string>
 </resources>
